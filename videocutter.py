@@ -7,14 +7,14 @@ startoffset=0
 endoffset=0
 fps=60
 tolerance=30
-startcoors=[]
-endcoors=[]
-startframe=0
+startcoors=[((930,535),(255,254,0)),((1024,544),(255,254,0))]
+endcoors=[((597,57),(0,0,0)),((616,1024),(78,84,94))]
 
 capture=cv2.VideoCapture("file.mp4")
 
 hasStarted=False
 gamecount=0
+currentframe=0
 startframe=0
 endframe=0
 
@@ -43,20 +43,20 @@ while capture.isOpened():
 		if not hasStarted:
 			if checkStarted(frame):
 				hasStarted= True
-				startframe=startframe
+				startframe=currentframe
 				print(f"game started on frame {startframe}")
 				#cv2.imwrite(f"started{startframe}.jpg",frame)
 		if hasStarted:
 			if checkEnded(frame):
 				hasStarted=False
-				endframe=startframe
+				endframe=currentframe
 				gamecount+=1
 				ffmpeg_extract_subclip("file.mp4", startframe/fps+startoffset, endframe/fps+endoffset, targetname=f"output/game{gamecount}.mp4")
 				print(f"game ended on frame {startframe}")
 				#cv2.imwrite(f"ended{startframe}.jpg",frame)
-		startframe+=60
-#		print(startframe)
-		capture.set(1,startframe)
+		currentframe+=60
+		print(currentframe)
+		capture.set(1,currentframe)
 	else:
 		capture.release()
 		break
